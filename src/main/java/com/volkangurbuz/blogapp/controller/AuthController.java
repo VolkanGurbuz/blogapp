@@ -1,6 +1,7 @@
 package com.volkangurbuz.blogapp.controller;
 
 import com.volkangurbuz.blogapp.service.AuthService;
+import dto.LoginRequest;
 import dto.RegisterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,5 +21,10 @@ public class AuthController {
   public ResponseEntity singUp(@RequestBody RegisterRequest registerRequest) {
     authService.signUp(registerRequest);
     return new ResponseEntity(HttpStatus.OK);
+  }
+
+  @PostMapping("/login")
+  public String login(@RequestBody LoginRequest loginRequest) {
+    return authService.login(loginRequest);
   }
 }
