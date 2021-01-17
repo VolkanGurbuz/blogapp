@@ -1,6 +1,7 @@
 package com.volkangurbuz.blogapp.config;
 
 import com.volkangurbuz.blogapp.repositories.UserRepository;
+import com.volkangurbuz.blogapp.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.naming.AuthenticationException;
 
@@ -26,6 +28,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   public AuthenticationManager authenticationManagerBean() throws Exception {
     return super.authenticationManagerBean();
+  }
+
+  @Bean
+  public JwtAuthenticationFilter jwtAuthenticationFilter() {
+    return new JwtAuthenticationFilter();
   }
 
   @Override
@@ -41,6 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll()
         .anyRequest()
         .authenticated();
+
+    httpSecurity.addFilterBefore(
+        jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
   }
 
   @Bean

@@ -1,5 +1,6 @@
 package com.volkangurbuz.blogapp.security;
 
+import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,9 +21,20 @@ public class JwtProvider {
   public void init() {
     key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
   }
-
+  // will generate the token
   public String generateToken(Authentication authentication) {
     User principal = (User) authentication.getPrincipal();
     return Jwts.builder().setSubject(principal.getUsername()).signWith(key).compact();
+  }
+
+  public boolean validateToken(String jwt) {
+    Jwts.parser().setSigningKey(key).parseClaimsJws(jwt);
+    return true;
+  }
+
+  public String getUsernameFromJWT(String token) {
+    Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+
+    return claims.getSubject();
   }
 }
